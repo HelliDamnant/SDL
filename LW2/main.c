@@ -7,24 +7,37 @@
 #define ERROR {printf("Error: %s\n", SDL_GetError());exit(1);}
 
 #define TITLE "0111101001100001011000110110100001111001011011110111010000100000011100000110110001111010"
-#define DEFAULT_X 100
-#define DEFAULT_Y 100
+#define DEFAULT_X 200
+#define DEFAULT_Y 150
 int WIDTH = 1120;
 int HEIGHT = 630;
 
 typedef struct {
 	float x;
 	float y;
+	float e;
 } point;
 
+typedef struct {
+	float x;
+	float y;
+	float e;
+} vector;
+
+typedef struct {
+	float matrix[3][3];
+} matrix_3x3;
+
+float rad(int);
 void draw_coordinate_axes(SDL_Renderer*);
 float sq(float);
-float cu(float);
 point get_point(point, float, int, int, int);
 void draw_graph(SDL_Renderer*, float, int, int, int);
 
 int main()
 {
+	system("clear");
+
 	int corner = 0,
 		shift_x = 0,
 		shift_y = 0;
@@ -123,18 +136,21 @@ int main()
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
     SDL_Quit();
-    system("clear");
+
+	system("clear");
+	return 0;
 }
 
 void draw_graph(SDL_Renderer *ren, float scale, int corner, int shift_x, int shift_y)
 {
-	int a = 50;
-	for (float m = -HEIGHT / 2 + 20; m <= HEIGHT / 2 - 20; m += 0.1)
+	int a = WIDTH / 10, l = WIDTH / 20;
+	for (float t = -PI; t <= PI; t += 0.01)
 	{
+		float mu = cos(t), nu = sin(t);
 		point p;
 
-		p.x = a * sq(m/a) / (1 + sq(m/a));
-		p.y = a * cu(m/a) / (1 + sq(m/a));
+		p.x = a * mu * mu + l * mu;
+		p.y = a * mu * nu + l * nu;
 
 		p = get_point(p, scale, corner, shift_x, shift_y);
 
@@ -149,8 +165,6 @@ void draw_coordinate_axes(SDL_Renderer *ren)
 }
 
 float sq(float a) {return a * a;}
-
-float cu(float a) {return a * a * a;}
 
 point get_point(point p, float scale, int corner, int shift_x, int shift_y)
 {
@@ -168,4 +182,46 @@ point get_point(point p, float scale, int corner, int shift_x, int shift_y)
 	p.y += shift_y;
 
 	return p;
+}
+
+matrix_3x3 translation_matrix(float T1, float T2)
+{
+	matrix_3x3 m;
+
+	m.matrix[0][1] = m.matrix[1][0] = m.matrix[2][0] = m.matrix[2][1] = 0;
+	m.matrix[0][0] = m.matrix[1][1] = m.matrix[2][2] = 1;
+	m.matrix[0][2] = -T1;
+	m.matrix[1][2] = -T2;
+
+	return m;
+}
+
+matrix_3x3 dalatation_matrix(float S1, float S2)
+{
+	matrix_3x3 m;
+
+	m.matrix[0][1] = m.matrix[0][2] = m.matrix[1][2] = m.matrix[1][0] = m.matrix[2][0] = m.matrix[2][1] = 0;
+	m.matrix[2][2] = 1;
+	m.matrix[0][0] = S1;
+	m.matrix[1][1] = S2;
+
+	return m;
+}
+
+matrix_3x3 rotation_matrix(int theta)
+{
+	theta = rad(theta);
+	matrix_3x3 m;
+
+	m.matrix[0][2] = m.matrix[1][2] = m.matrix[2][0] = m.matrix[2][1] = 0;
+	m.matrix[2][2] = 1;
+	m.matrix[0][0] = m.matrix[1][1] = cos(theta);
+	m.matrix[1][0] = -(m.matrix[0][1] = sin(theta));
+
+	return m;
+}
+
+float rad(int corn)
+{
+	return corn * 180 / PI;
 }
