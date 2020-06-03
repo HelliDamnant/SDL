@@ -18,16 +18,6 @@ typedef struct {
 	float e;
 } point;
 
-typedef struct {
-	float x;
-	float y;
-	float e;
-} vector;
-
-typedef struct {
-	float matrix[3][3];
-} matrix_3x3;
-
 float rad(int);
 void draw_coordinate_axes(SDL_Renderer*);
 float sq(float);
@@ -182,43 +172,6 @@ point get_point(point p, float scale, int corner, int shift_x, int shift_y)
 	p.y += shift_y;
 
 	return p;
-}
-
-matrix_3x3 translation_matrix(float T1, float T2)
-{
-	matrix_3x3 m;
-
-	m.matrix[0][1] = m.matrix[1][0] = m.matrix[2][0] = m.matrix[2][1] = 0;
-	m.matrix[0][0] = m.matrix[1][1] = m.matrix[2][2] = 1;
-	m.matrix[0][2] = -T1;
-	m.matrix[1][2] = -T2;
-
-	return m;
-}
-
-matrix_3x3 dalatation_matrix(float S1, float S2)
-{
-	matrix_3x3 m;
-
-	m.matrix[0][1] = m.matrix[0][2] = m.matrix[1][2] = m.matrix[1][0] = m.matrix[2][0] = m.matrix[2][1] = 0;
-	m.matrix[2][2] = 1;
-	m.matrix[0][0] = S1;
-	m.matrix[1][1] = S2;
-
-	return m;
-}
-
-matrix_3x3 rotation_matrix(int theta)
-{
-	theta = rad(theta);
-	matrix_3x3 m;
-
-	m.matrix[0][2] = m.matrix[1][2] = m.matrix[2][0] = m.matrix[2][1] = 0;
-	m.matrix[2][2] = 1;
-	m.matrix[0][0] = m.matrix[1][1] = cos(theta);
-	m.matrix[1][0] = -(m.matrix[0][1] = sin(theta));
-
-	return m;
 }
 
 float rad(int corn)
