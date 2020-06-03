@@ -56,7 +56,7 @@ int main()
 	if (c == 'y' || c == 'Y') {
 
 	} else if (c != 'n' || c != 'N') {
-		condition.distance = 1;
+		condition.distance = 100;
 		condition.corner_x = 0;
 		condition.corner_y = 50;
 		condition.corner_z = 0;
@@ -147,11 +147,17 @@ int main()
 		draw_line(ren, cube.p1, cube.p2, condition);
 		draw_line(ren, cube.p2, cube.p3, condition);
 		draw_line(ren, cube.p3, cube.p4, condition);
-		draw_line(ren, cube.p4, cube.p5, condition);
+		draw_line(ren, cube.p4, cube.p1, condition);
+
 		draw_line(ren, cube.p5, cube.p6, condition);
 		draw_line(ren, cube.p6, cube.p7, condition);
 		draw_line(ren, cube.p7, cube.p8, condition);
-		draw_line(ren, cube.p8, cube.p1, condition);
+		draw_line(ren, cube.p8, cube.p5, condition);
+
+		draw_line(ren, cube.p1, cube.p8, condition);
+		draw_line(ren, cube.p2, cube.p7, condition);
+		draw_line(ren, cube.p3, cube.p6, condition);
+		draw_line(ren, cube.p4, cube.p5, condition);
 
         SDL_RenderPresent(ren);
     }
@@ -164,8 +170,6 @@ int main()
 	return 0;
 }
 
-
-
 void draw_line(SDL_Renderer *ren, POINT p1, POINT p2, CONDITION cond)
 {
 	float len = vector_length(p1, p2);
@@ -176,28 +180,12 @@ void draw_line(SDL_Renderer *ren, POINT p1, POINT p2, CONDITION cond)
 		p.x = _point(mu, p1.x, p2.x) + cond.shift_x;
 		p.y = _point(mu, p1.y, p2.y) + cond.shift_y;
 		p.z = _point(mu, p1.z, p2.z) + cond.shift_z;
-		SDL_RenderDrawPoint(ren, OX(cond.distance*p.x / p.z), OY(cond.distance*p.y / p.z));
+		SDL_RenderDrawPoint(ren,
+							OX(cond.distance*p.x / (p.z + cond.distance)),
+							OY(cond.distance*p.y / (p.z + cond.distance)));
 	}
 }
 
 float vector_length(POINT p1, POINT p2) {return sqrt(sq(p2.x - p1.x) + sq(p2.y - p1.y) + sq(p2.z - p1.z));}
 float _point(float mu, float t1, float t2) {return (1 - mu) * t1 + mu * t2;}
 float sq(float a) {return a * a;}
-
-// POINT get_point(POINT p, float condition.shift_z, int corner, int shift_x, int shift_y)
-// {
-// 	p.x = condition.shift_z * p.x;
-// 	p.y = condition.shift_z * p.y;
-
-// 	float xt = p.x,
-// 		  yt = p.y,
-// 		  cost = cos(corner * PI / 180),
-// 		  sint = sin(corner * PI / 180);
-// 	p.x = xt * cost + yt * sint;
-// 	p.y = yt * cost - xt * sint;
-
-// 	p.x += shift_x;
-// 	p.y += shift_y;
-
-// 	return p;
-// }

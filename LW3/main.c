@@ -34,7 +34,6 @@ typedef struct {
 	int y;
 } SHIFT_CS;
 
-float rad(int);
 float sq(float);
 void draw_primitives(SDL_Renderer*, QUADRANGLE, ELIPSE, SHIFT_CS, SHIFT_CS, SDL_Rect);
 
@@ -220,24 +219,6 @@ void draw_primitives(SDL_Renderer* ren, QUADRANGLE q, ELIPSE e, SHIFT_CS qs, SHI
 		p.y = e.b * sin(t) + es.y;
 		if(visibility(p, w))SDL_RenderDrawPoint(ren, WIDTH / 2 + p.x, HEIGHT / 2 - p.y);
 	}
-}
-
-POINT get_point(POINT p, float scale, int corner, int shift_x, int shift_y)
-{
-	p.x = scale * p.x;
-	p.y = scale * p.y;
-
-	float xt = p.x,
-		  yt = p.y,
-		  cost = cos(corner * PI / 180),
-		  sint = sin(corner * PI / 180);
-	p.x = xt * cost + yt * sint;
-	p.y = yt * cost - xt * sint;
-
-	p.x += shift_x;
-	p.y += shift_y;
-
-	return p;
 }
 
 float sq(float a) {return a * a;}
