@@ -199,9 +199,6 @@ void draw_line(SDL_Renderer *ren, POINT p1, POINT p2, SHIFT_CS shift, ELIPSE e, 
 				SDL_RenderDrawPoint(ren, WIDTH / 2 + p.x, HEIGHT / 2 - p.y);
 			}
 		}
-
-		if (l.x != p2.x) l.x += 0.01;
-		if (l.y != p2.y) l.y += 0.01;
 	}
 }
 
